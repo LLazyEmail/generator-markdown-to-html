@@ -13,7 +13,7 @@
     "url": "git@github.com:LLazyEmail/generator-markdown-to-html.git"
   },
   "dependencies": {
-    "rehype-stringify": "^9.0.2",
+    "rehype-stringify": "^10.0.0",
     "remark-gfm": "^3.0.0",
     "remark-parse": "^10.0.0",
     "remark-rehype": "^10.0.0",
