@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "rehype-stringify": "^9.0.2",
-    "remark-gfm": "^3.0.0",
-    "remark-parse": "^10.0.0",
-    "remark-rehype": "^10.0.0",
-    "remark-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.0.0",
+    "remark-stringify": "^11.0.0",
     "unified": "^10.1.0",
     "unified-stream": "^2.0.0",
     "unist-util-visit": "^4.1.0"
