@@ -20,7 +20,7 @@
     "remark-stringify": "^10.0.1",
     "unified": "^10.1.0",
     "unified-stream": "^2.0.0",
-    "unist-util-visit": "^4.1.0"
+    "unist-util-visit": "^5.0.0"
   },
   "author": "Vadim",
   "license": "ISC",
