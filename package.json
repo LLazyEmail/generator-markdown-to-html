@@ -1,12 +1,29 @@
 {
   "name": "generator-markdown-to-html",
-  "version": "1.0.0",
-  "description": "",
-  "exports": "./src/index.js",
+  "version": "1.1.0",
+  "description": "Markdown to HTML generator using unified/remark/rehype (TypeScript + tsup + Vitest)",
   "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "start": "node ./src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "repository": {
     "type": "git",
@@ -22,9 +39,15 @@
     "unified-stream": "^3.0.0",
     "unist-util-visit": "^5.0.0"
   },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
   "author": "Vadim",
   "license": "ISC",
   "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": ">=18.0.0"
   }
 }
