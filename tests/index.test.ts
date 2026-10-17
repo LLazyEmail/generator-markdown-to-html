@@ -1,21 +1,53 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import rehypeStringify from 'rehype-stringify';
+import { markdownToHtml } from '../src/index';
+import defaultExport from '../src/index';
 
-describe('markdown-to-html', () => {
-  it('converts basic markdown to HTML', async () => {
-    const source = readFileSync('./src/source.md', 'utf-8');
-    const file = await unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeStringify)
-      .process(source);
+describe('markdownToHtml', () => {
+  it('converts headings and paragraphs', async () => {
+    const html = await markdownToHtml('# Title\n\nSome *text*.');
 
-    const html = String(file);
-    expect(html).toContain('<');
-    expect(html.length).toBeGreaterThan(0);
+    expect(html).toContain('<h1>Title</h1>');
+    expect(html).toContain('<p>Some <em>text</em>.</p>');
+  });
+
+  it('is also available as the default export', () => {
+    expect(defaultExport).toBe(markdownToHtml);
+  });
+
+  it('supports GitHub Flavored Markdown by default', async () => {
+    const table = '| a | b |\n| - | - |\n| 1 | 2 |';
+    const html = await markdownToHtml(`${table}\n\n~~gone~~`);
+
+    expect(html).toContain('<table>');
+    expect(html).toContain('<del>gone</del>');
+  });
+
+  it('can disable GitHub Flavored Markdown', async () => {
+    const html = await markdownToHtml('| a | b |\n| - | - |\n| 1 | 2 |', {
+      gfm: false,
+    });
+
+    expect(html).not.toContain('<table>');
+  });
+
+  it('leaves links untouched when no linkAttributes are given', async () => {
+    const html = await markdownToHtml('[docs](https://example.com)');
+
+    expect(html).toContain('<a href="https://example.com">docs</a>');
+  });
+
+  it('adds linkAttributes to every link', async () => {
+    const html = await markdownToHtml(
+      '[one](https://example.com) and [two](https://example.org)',
+      { linkAttributes: { target: '_blank', rel: 'noopener' } },
+    );
+
+    expect(html.match(/target="_blank"/g)).toHaveLength(2);
+    expect(html.match(/rel="noopener"/g)).toHaveLength(2);
+    expect(html).toContain('href="https://example.com"');
+  });
+
+  it('returns an empty string for empty input', async () => {
+    expect(await markdownToHtml('')).toBe('');
   });
 });
