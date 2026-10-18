@@ -12,7 +12,7 @@ const readSourceFile = (fileName: string) => {
   return readFileSync(fileName, { encoding: 'utf-8' });
 };
 
-const sourceFile = readSourceFile('./src/source.md');
+const sourceFile = readSourceFile('./examples/source.md');
 
 function transformer(ast: any) {
   visit(ast, 'link', visitor);

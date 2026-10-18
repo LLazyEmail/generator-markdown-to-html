@@ -1,0 +1,1 @@
+[an external link](https://developer.mozilla.org)
