@@ -2,16 +2,31 @@
   "name": "generator-markdown-to-html",
   "version": "1.1.0",
   "description": "Markdown to HTML generator using unified/remark/rehype (TypeScript + tsup + Vitest)",
+  "keywords": [
+    "markdown",
+    "html",
+    "converter",
+    "gfm",
+    "remark",
+    "rehype",
+    "unified"
+  ],
   "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   },
   "sideEffects": false,
   "files": [
@@ -23,11 +38,20 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "smoke": "bash scripts/smoke-test.sh",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:LLazyEmail/generator-markdown-to-html.git"
+    "url": "git+https://github.com/LLazyEmail/generator-markdown-to-html.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LLazyEmail/generator-markdown-to-html/issues"
+  },
+  "homepage": "https://github.com/LLazyEmail/generator-markdown-to-html#readme",
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "rehype-stringify": "^10.0.0",
@@ -51,6 +75,6 @@
   "author": "Vadim",
   "license": "ISC",
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=18.0.0"
   }
 }

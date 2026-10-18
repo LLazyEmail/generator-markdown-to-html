@@ -1,5 +1,8 @@
 import { defineConfig } from 'tsup';
 
+// Anything listed under `dependencies` in package.json is automatically kept
+// external by tsup, so it is installed (not bundled) when consumers run
+// `npm install`.
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
@@ -8,14 +11,4 @@ export default defineConfig({
   sourcemap: true,
   minify: false,
   splitting: false,
-  external: [
-    'unified',
-    'remark-parse',
-    'remark-gfm',
-    'remark-rehype',
-    'rehype-stringify',
-    'unist-util-visit',
-    'remark-stringify',
-    'unified-stream',
-  ],
 });
