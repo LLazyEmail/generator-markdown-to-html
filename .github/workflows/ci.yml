@@ -34,3 +34,61 @@ jobs:
 
     - name: Test
       run: npm test
+
+  # Builds the package exactly as it would be published and validates it.
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+    - name: Lint package.json and exports (publint)
+      run: npx --yes publint@0.3.12 --strict
+
+    - name: Check type resolution for ESM and CJS consumers (attw)
+      run: npx --yes @arethetypeswrong/cli@0.18.2 --pack . --profile node16
+
+    - name: Pack tarball
+      run: npm pack
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: package-tarball
+        path: '*.tgz'
+        if-no-files-found: error
+
+  # Installs the packed tarball into a fresh project on every supported Node
+  # version and imports it from ESM and CommonJS.
+  smoke-test:
+    needs: package
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x, 24.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: package-tarball
+        path: package-tarball
+
+    - name: Smoke test the packed package
+      run: bash scripts/smoke-test.sh package-tarball/*.tgz

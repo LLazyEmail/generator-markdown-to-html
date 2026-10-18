@@ -6,9 +6,14 @@ Convert Markdown to HTML using the [unified](https://unifiedjs.com) ecosystem
 Built with **TypeScript**, bundled with **tsup**, tested with **Vitest**.
 Ships ESM, CommonJS and TypeScript declarations.
 
-## Requirements
+## Installation
 
-Node.js 22 or newer (see `package.json`).
+```bash
+npm install generator-markdown-to-html
+```
+
+Requires Node.js 18 or newer. (Developing this package needs Node.js 22+ for
+the test tooling.)
 
 ## Usage
 
@@ -65,7 +70,8 @@ npm test           # vitest
 
 - `dist/index.js` — ESM
 - `dist/index.cjs` — CommonJS
-- `dist/index.d.ts` — TypeScript declarations
+- `dist/index.d.ts` — TypeScript declarations for ESM consumers
+- `dist/index.d.cts` — TypeScript declarations for CommonJS consumers
 
 ### Examples
 
@@ -79,5 +85,22 @@ npx tsx examples/custom-link-plugin.ts
 
 ### CI
 
-GitHub Actions runs type check, build and tests on Node 22 and 24 for
-every push and pull request to `master`/`main`.
+GitHub Actions runs on every push and pull request to `master`/`main`:
+
+- **build-and-test** — type check, build and tests on Node 22 and 24.
+- **package** — builds the package, validates `package.json`/`exports` with
+  [publint](https://publint.dev) and type resolution with
+  [Are the types wrong?](https://arethetypeswrong.github.io), then packs a
+  tarball.
+- **smoke-test** — installs that tarball into a fresh project on Node 18, 20,
+  22 and 24 and imports it from both ESM and CommonJS. You can run the same
+  check locally with `npm run build && npm run smoke`.
+
+### Releasing
+
+1. Bump `version` in `package.json` (`npm version patch|minor|major`) and push
+   the commit and tag.
+2. Publish a GitHub release for that tag (`v<version>`).
+3. The **Publish** workflow verifies the tag matches `package.json`, runs the
+   type check, tests and build, and publishes to npm with provenance. It needs
+   an `NPM_TOKEN` repository secret.
