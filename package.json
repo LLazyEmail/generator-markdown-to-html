@@ -53,23 +53,21 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
+    "eslint": "^10.14.0",
     "rehype-stringify": "^10.0.0",
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "unified": "^11.0.0",
-    "unified-stream": "^3.0.0",
-    "unist-util-visit": "^5.2.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^26.6.6",
-    "eslint": "^10.14.0",
     "tsup": "^9.0.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.1",
+    "unified": "^11.0.0",
+    "unified-stream": "^3.0.0",
+    "unist-util-visit": "^5.2.0",
     "vitest": "^5.0.5"
   },
   "author": "Vadim",
