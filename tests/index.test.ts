@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { markdownToHtml } from '../src/index';
 import defaultExport from '../src/index';
+import { visit } from 'unist-util-visit';
 
 describe('markdownToHtml', () => {
   it('converts headings and paragraphs', async () => {
@@ -49,5 +50,21 @@ describe('markdownToHtml', () => {
 
   it('returns an empty string for empty input', async () => {
     expect(await markdownToHtml('')).toBe('');
+  });
+
+  it('applies custom remark plugins', async () => {
+    const prefixHeading = () => (tree: any) => {
+      visit(tree, 'heading', (node: any) => {
+        if (node.depth === 1 && node.children?.[0]) {
+          node.children[0].value = 'Prefix: ' + node.children[0].value;
+        }
+      });
+    };
+
+    const html = await markdownToHtml('# Hello', {
+      remarkPlugins: [prefixHeading],
+    });
+
+    expect(html).toContain('<h1>Prefix: Hello</h1>');
   });
 });
