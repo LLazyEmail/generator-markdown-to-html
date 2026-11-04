@@ -9,3 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:
+      # typescript-eslint 8.x (and tsup's dts build) require typescript <6.1.
+      # TS 7 (native Go compiler) is not yet supported by this tooling.
+      # Remove once typescript-eslint supports typescript >=6.1.
+      - dependency-name: "typescript"
+        versions: [">=6.1.0"]
