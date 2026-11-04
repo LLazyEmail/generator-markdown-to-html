@@ -1,8 +1,8 @@
 import { defineConfig } from 'tsup';
 
-// Anything listed under `dependencies` in package.json is automatically kept
-// external by tsup, so it is installed (not bundled) when consumers run
-// `npm install`.
+// Bundle the unified/remark/rehype ecosystem. These packages are ESM-only;
+// leaving them external breaks the CJS build with ERR_REQUIRE_ESM on Node.
+// The resulting bundles are small and self-contained.
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
@@ -11,4 +11,14 @@ export default defineConfig({
   sourcemap: true,
   minify: false,
   splitting: false,
+  noExternal: [
+    'unified',
+    'remark-parse',
+    'remark-gfm',
+    'remark-rehype',
+    'rehype-stringify',
+    'unist-util-visit',
+    'remark-stringify',
+    'unified-stream',
+  ],
 });
