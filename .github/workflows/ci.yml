@@ -57,7 +57,7 @@ jobs:
       run: npx --yes publint@0.3.12 --strict
 
     - name: Check type resolution for ESM and CJS consumers (attw)
-      run: npx --yes @arethetypeswrong/cli@0.18.2 --pack . --profile node16
+      run: npx --yes @arethetypeswrong/cli@0.18.5 --pack . --profile node16
 
     - name: Pack tarball
       run: npm pack
