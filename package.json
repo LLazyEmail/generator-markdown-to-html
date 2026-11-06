@@ -63,7 +63,7 @@
     "remark-rehype": "^11.0.0",
     "remark-stringify": "^11.0.0",
     "tsup": "^9.0.0",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "typescript-eslint": "^8.72.1",
     "unified": "^11.0.0",
     "unified-stream": "^3.0.0",
