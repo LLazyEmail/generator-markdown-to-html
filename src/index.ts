@@ -3,6 +3,7 @@ import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+import rehypeSanitize from 'rehype-sanitize';
 import { visit } from 'unist-util-visit';
 
 /**
@@ -32,6 +33,13 @@ export interface MarkdownToHtmlOptions {
    * Each entry is a plugin function or a [plugin, options] tuple.
    */
   rehypePlugins?: Array<any | [any, any]>;
+
+  /**
+   * Sanitize the resulting HTML. `true` uses a safe default schema.
+   * Pass a custom schema object for fine-grained control.
+   * Defaults to `false`.
+   */
+  sanitize?: boolean | Record<string, unknown>;
 }
 
 /**
@@ -76,7 +84,7 @@ export async function markdownToHtml(
   markdown: string,
   options: MarkdownToHtmlOptions = {},
 ): Promise<string> {
-  const { gfm = true, linkAttributes, remarkPlugins, rehypePlugins } = options;
+  const { gfm = true, linkAttributes, remarkPlugins, rehypePlugins, sanitize } = options;
 
   // Typed loosely: plugins are added conditionally, which unified's chained
   // generics cannot express.
@@ -93,6 +101,11 @@ export async function markdownToHtml(
   processor = usePlugins(processor, remarkPlugins);
 
   processor = processor.use(remarkRehype);
+
+  if (sanitize) {
+    const schema = typeof sanitize === 'object' ? sanitize : undefined;
+    processor = processor.use(rehypeSanitize, schema);
+  }
 
   processor = usePlugins(processor, rehypePlugins);
 
