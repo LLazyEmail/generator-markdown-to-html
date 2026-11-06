@@ -20,6 +20,18 @@ export interface MarkdownToHtmlOptions {
    * names, e.g. `{ target: '_blank', rel: 'noopener', className: 'external' }`.
    */
   linkAttributes?: Record<string, unknown>;
+
+  /**
+   * Additional remark plugins to apply after the built-in ones.
+   * Each entry is a plugin function or a [plugin, options] tuple.
+   */
+  remarkPlugins?: Array<any | [any, any]>;
+
+  /**
+   * Additional rehype plugins to apply after remarkRehype and before stringify.
+   * Each entry is a plugin function or a [plugin, options] tuple.
+   */
+  rehypePlugins?: Array<any | [any, any]>;
 }
 
 /**
@@ -33,6 +45,21 @@ const remarkLinkAttributes = (attributes: Record<string, unknown>) => {
     });
   };
 };
+
+/**
+ * Apply a list of plugins (or [plugin, options] tuples) to a processor.
+ */
+function usePlugins(processor: any, plugins: Array<any | [any, any]> | undefined) {
+  if (!plugins) return processor;
+  for (const entry of plugins) {
+    if (Array.isArray(entry)) {
+      processor.use(entry[0], entry[1]);
+    } else {
+      processor.use(entry);
+    }
+  }
+  return processor;
+}
 
 /**
  * Convert a Markdown string to an HTML string.
@@ -49,24 +76,27 @@ export async function markdownToHtml(
   markdown: string,
   options: MarkdownToHtmlOptions = {},
 ): Promise<string> {
-  const { gfm = true, linkAttributes } = options;
+  const { gfm = true, linkAttributes, remarkPlugins, rehypePlugins } = options;
 
   // Typed loosely: plugins are added conditionally, which unified's chained
   // generics cannot express.
-  const processor: any = unified().use(remarkParse);
+  let processor: any = unified().use(remarkParse);
 
   if (gfm) {
-    processor.use(remarkGfm);
+    processor = processor.use(remarkGfm);
   }
 
   if (linkAttributes && Object.keys(linkAttributes).length > 0) {
-    processor.use(remarkLinkAttributes, linkAttributes);
+    processor = processor.use(remarkLinkAttributes, linkAttributes);
   }
 
-  const file = await processor
-    .use(remarkRehype)
-    .use(rehypeStringify)
-    .process(markdown);
+  processor = usePlugins(processor, remarkPlugins);
+
+  processor = processor.use(remarkRehype);
+
+  processor = usePlugins(processor, rehypePlugins);
+
+  const file = await processor.use(rehypeStringify).process(markdown);
 
   return String(file);
 }
