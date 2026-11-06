@@ -68,7 +68,7 @@
     "unified": "^11.0.0",
     "unified-stream": "^3.0.0",
     "unist-util-visit": "^5.2.0",
-    "vitest": "^5.0.5"
+    "vitest": "^5.1.0"
   },
   "author": "Vadim",
   "license": "ISC",
