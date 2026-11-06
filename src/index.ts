@@ -32,6 +32,12 @@ export interface MarkdownToHtmlOptions {
    * Each entry is a plugin function or a [plugin, options] tuple.
    */
   rehypePlugins?: Array<any | [any, any]>;
+
+  /**
+   * When true, strip YAML frontmatter (lines between leading `---` pairs)
+   * before conversion. Defaults to `false`.
+   */
+  stripFrontmatter?: boolean;
 }
 
 /**
@@ -61,6 +67,11 @@ function usePlugins(processor: any, plugins: Array<any | [any, any]> | undefined
   return processor;
 }
 
+function stripYamlFrontmatter(markdown: string): string {
+  const match = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+  return match ? markdown.slice(match[0].length) : markdown;
+}
+
 /**
  * Convert a Markdown string to an HTML string.
  *
@@ -76,7 +87,9 @@ export async function markdownToHtml(
   markdown: string,
   options: MarkdownToHtmlOptions = {},
 ): Promise<string> {
-  const { gfm = true, linkAttributes, remarkPlugins, rehypePlugins } = options;
+  const { gfm = true, linkAttributes, remarkPlugins, rehypePlugins, stripFrontmatter = false } = options;
+
+  const input = stripFrontmatter ? stripYamlFrontmatter(markdown) : markdown;
 
   // Typed loosely: plugins are added conditionally, which unified's chained
   // generics cannot express.
@@ -96,7 +109,7 @@ export async function markdownToHtml(
 
   processor = usePlugins(processor, rehypePlugins);
 
-  const file = await processor.use(rehypeStringify).process(markdown);
+  const file = await processor.use(rehypeStringify).process(input);
 
   return String(file);
 }
