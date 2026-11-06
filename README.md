@@ -38,6 +38,8 @@ const { markdownToHtml } = require('generator-markdown-to-html');
 | ---------------- | ------------------------- | ------- | --------------------------------------------------------------------------- |
 | `gfm`            | `boolean`                 | `true`  | Tables, strikethrough, task lists and autolink literals.                    |
 | `linkAttributes` | `Record<string, unknown>` | none    | Attributes added to every `<a>`, using hast property names (see below).     |
+| `remarkPlugins`  | `Plugin[]`                | none    | Additional remark plugins (after built-ins).                                |
+| `rehypePlugins`  | `Plugin[]`                | none    | Additional rehype plugins (after rehype conversion).                        |
 
 ```ts
 const html = await markdownToHtml('[docs](https://example.com)', {
@@ -49,13 +51,17 @@ const html = await markdownToHtml('[docs](https://example.com)', {
 Use `className` (not `class`) for CSS classes, as property names follow
 [hast](https://github.com/syntax-tree/hast#properties).
 
+### Security notes
+
+- Raw HTML inside Markdown is dropped by default.
+- Link and image URLs are **not** sanitized (`javascript:` etc. can pass through).
+- Always sanitize the output (e.g. with `sanitize-html` or DOMPurify) before
+  rendering untrusted Markdown in a browser.
+- An optional built-in sanitization path is under consideration.
+
 ### Notes
 
 - The function is pure: no file or network access, no logging.
-- Raw HTML inside Markdown is dropped (the default `remark-rehype` behaviour),
-  but link and image URLs are **not** sanitized (for example `javascript:`
-  URLs pass through). If you render untrusted Markdown, sanitize the resulting
-  HTML (for example with `sanitize-html` or DOMPurify) before embedding it.
 
 ## Development
 
