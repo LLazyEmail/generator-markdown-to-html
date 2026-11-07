@@ -67,4 +67,31 @@ describe('markdownToHtml', () => {
 
     expect(html).toContain('<h1>Prefix: Hello</h1>');
   });
+
+  it('renders images', async () => {
+    const html = await markdownToHtml('![alt](https://example.com/img.png)');
+    expect(html).toContain('<img');
+    expect(html).toContain('src="https://example.com/img.png"');
+    expect(html).toContain('alt="alt"');
+  });
+
+  it('renders fenced code blocks', async () => {
+    const html = await markdownToHtml('```js\nconsole.log(1)\n```');
+    expect(html).toContain('<pre><code');
+    expect(html).toContain('console.log(1)');
+  });
+
+  it('renders unordered lists', async () => {
+    const html = await markdownToHtml('- one\n- two');
+    expect(html).toContain('<ul>');
+    expect(html).toContain('<li>one</li>');
+    expect(html).toContain('<li>two</li>');
+  });
+
+  it('renders task lists (GFM)', async () => {
+    const html = await markdownToHtml('- [ ] todo\n- [x] done');
+    expect(html).toContain('<ul');
+    expect(html).toContain('todo');
+    expect(html).toContain('done');
+  });
 });
